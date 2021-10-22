@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\PropertyRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRepository::class)
@@ -12,8 +14,8 @@ use Cocur\Slugify\Slugify;
 class Property
 {
     const HEAT = [
-        0 => 'electric',
-        1 => 'gaz'
+        0 => 'Electric',
+        1 => 'Gaz'
     ];
     
     /**
@@ -25,6 +27,12 @@ class Property
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 15,
+     *      minMessage = " Le titre doit etre superieur à {{ limit }} caractères",
+     *      maxMessage = " Le titre ne doit pas dépasser à {{ limit }} caractères"
+     * )
      */
     private $title;
 
@@ -35,6 +43,11 @@ class Property
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 20,
+     *      max = 800,
+     *      notInRangeMessage = " doit etre entre {{ min }}m et {{ max }}m ",
+     * )
      */
     private $surface;
 
@@ -75,6 +88,7 @@ class Property
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^[0-9]{5}/")
      */
     private $postal_code;
 
@@ -258,7 +272,7 @@ class Property
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->created_at;
     }
