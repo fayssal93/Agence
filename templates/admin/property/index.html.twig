@@ -3,7 +3,7 @@
 
 {% block body %}
     <div class="container mt-4">
-    </div>
+    
     <h1>Gérer les biens</h1>
 
     {% for message in app.flashes('succes') %}
@@ -39,5 +39,6 @@
     <div class = "text-right" >
         <a href="{{path('admin.property.new')}}" class="btn btn-primary"> Ajouter un bien </a>
     </div>
+</div>
 </div>
 {% endblock %}
