@@ -2,10 +2,14 @@
 namespace App\Controller; 
 
 use App\Entity\Property;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Recherche;
+use App\Form\RechercheType;
 use App\Repository\PropertyRepository; 
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class PropertyController extends AbstractController {
@@ -24,11 +28,29 @@ class PropertyController extends AbstractController {
      * @Route("/biens", name="property.index")
      * @return Response
      */
-    public function index(): Response
-    {    
-        $property = $this->repository->findAllVisible();
-        dump($property);
-        return $this->render('property/index.html.twig');
+    public function index( PaginatorInterface $paginator, Request $request): Response
+    {     
+       // Créer une entité qui va représenter notre recherche prix max, nbr de pièces max, 
+       $recherche = new Recherche(); 
+
+       // créer un forumalaire 
+       $form = $this->createForm(RechercheType::class, $recherche );
+
+       // Gérer le traitement dans le controller
+       $form->handleRequest($request);
+      
+       $properties = $paginator->paginate(
+        $this->repository->findAllVisible($recherche),
+        $request->query->getInt('page', 1), /*page number*/
+        12  /*limit per page*/
+        );
+
+        
+
+        return $this->render('property/index.html.twig', [
+            'properties' => $properties,
+            'form' => $form->createView()
+        ]);
     }
 
      /**

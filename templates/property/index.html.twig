@@ -2,7 +2,31 @@
 {% block title('Nos biens') %}
 {% block body %}
 
+<div class="container">
+    {{form_start(form)}}
+        <div class="form-row">
+            <div class="col">
+                {{form_row(form.minSurface)}}
+            </div>
+            <div class="form-row">
+                {{form_row(form.maxPrice)}}
+            </div>
+            <div class="form-row">
+                <button class="btn btn-primary mt-4 ">Rechercher</button> 
+            </div>
+        </div> 
+    {{form_end(form)}}
+</div>
 <div class="container mt-4">
-    <h1>Voir tous nos biens </h1>
-   </div>
+    <h1> Voir tous nos biens </h1>
+        <div class="row flex">
+            {% for property in properties %}
+                {% include 'property/_property.html.twig' %}
+            {% endfor %}
+        </div>
+        <div class="navigation">
+            {{ knp_pagination_render(properties) }}
+        </div>
+</div>
+
 {% endblock %}
